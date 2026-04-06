@@ -1,0 +1,13 @@
+automatic_driving:
+  ros__parameters:
+    robot_base_frame: base_link
+    costmap_topic: /global_costmap/costmap
+    costmap_updates_topic: /global_costmap/costmap_updates
+    visualize: true
+    planner_frequency: 3.0
+    progress_timeout: 3.0
+    potential_scale: 0.1
+    orientation_scale: 0.0
+    gain_scale: 3.0
+    transform_tolerance: 0.2
+    min_frontier_size: 0.1
