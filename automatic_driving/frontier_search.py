@@ -122,8 +122,6 @@ class FrontierSearch:
                 'cost': (self.potential_scale * dist) - (self.gain_scale * size_in_pixels * res)
             }
 
-            print(frontier)
-
             frontier_list.append(frontier)
 
         frontier_list.sort(key=lambda x: x['cost'])
