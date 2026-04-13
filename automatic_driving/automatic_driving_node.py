@@ -111,7 +111,7 @@ class Driving(Node):
 # =================================
 
     def plan_exploration(self):
-
+        
         if not self.nav_available:
             self.get_logger().warn('Nav2가 없어 탐색 중지됨')
             return
@@ -139,6 +139,7 @@ class Driving(Node):
 
         if not frontiers:
             self.get_logger().info('탐색 완료.')
+            self.timer.cancel()
             return
         
         target = frontiers[0]['world_point']
