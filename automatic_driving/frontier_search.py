@@ -4,7 +4,7 @@ from geometry_msgs.msg import Point, PoseStamped
 
 
 class FrontierSearch:
-    def __init__(self, potential_scale=1e-3, gain_scale=1.0, min_frontier_size=0.3):
+    def __init__(self, potential_scale=1e-3, gain_scale=1.0, min_frontier_size=0.05):
         self.potential_scale = potential_scale
         self.gain_scale = gain_scale
         self.min_frontier_size = min_frontier_size 
@@ -37,7 +37,7 @@ class FrontierSearch:
     # -------------------------------
     # connected components (BFS)
     # -------------------------------
-    def get_clusters(self, mask):
+    def get_clusters_BFS(self, mask):
         h, w = mask.shape
         visited = np.zeros_like(mask, dtype=bool)
         clusters = []
@@ -61,6 +61,38 @@ class FrontierSearch:
                                 if mask[ny, nx] and not visited[ny, nx]:
                                     visited[ny, nx] = True
                                     queue.append((ny, nx))
+
+                    clusters.append(cluster)
+
+        return clusters
+    
+    # -------------------------------
+    # connected components (DFS)
+    # -------------------------------
+    def get_clusters_DFS(self, mask):
+        h, w = mask.shape
+        visited = np.zeros_like(mask, dtype=bool)
+        clusters = []
+
+        directions = [(-1,0),(1,0),(0,-1),(0,1)]
+
+        for y in range(h):
+            for x in range(w):
+                if mask[y, x] and not visited[y, x]:
+                    stack = [(y, x)]
+                    visited[y, x] = True
+                    cluster = []
+
+                    while stack:
+                        cy, cx = stack.pop()
+                        cluster.append((cy, cx))
+
+                        for dy, dx in directions:
+                            ny, nx = cy + dy, cx + dx
+                            if 0 <= ny < h and 0 <= nx < w:
+                                if mask[ny, nx] and not visited[ny, nx]:
+                                    visited[ny, nx] = True
+                                    stack.append((ny, nx))
 
                     clusters.append(cluster)
 
@@ -99,7 +131,7 @@ class FrontierSearch:
         frontier_mask = np.logical_and(unknown_mask, dilated_free)
 
         # 5. 클러스터링
-        clusters = self.get_clusters(frontier_mask)
+        clusters = self.get_clusters_DFS(frontier_mask)
 
         frontier_list = []
 
